@@ -1,8 +1,7 @@
 ﻿using Microsoft.VisualStudio.Threading;
 using System;
-using System.Diagnostics;
-using System.Net.Http;
 using System.Net.WebSockets;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,6 +47,11 @@ namespace StreamJsonRpc.Sample.WebSocketClient
                         int result = await jsonRpc.InvokeWithCancellationAsync<int>("Add", new object[] { 1, 2 }, cancellationToken);
                         Console.WriteLine($"JSON-RPC server says 1 + 2 = {result}");
 
+                        var stringResult = await jsonRpc.InvokeWithParameterObjectAsync<string>("TestMethod",
+                            new TestDto { TestA = "Client", TestB = "Secret" }, cancellationToken);
+
+                        Console.WriteLine($"{stringResult}");
+
                         // Request notifications from the server.
                         await jsonRpc.NotifyAsync("SendTicksAsync");
 
@@ -63,5 +67,13 @@ namespace StreamJsonRpc.Sample.WebSocketClient
                 }
             }
         }
+    }
+
+    public class TestDto
+    {
+        [JsonPropertyName("clientId")]
+        public string TestA { get; set; }
+        [JsonPropertyName("clientSecret")]
+        public string TestB { get; set; }
     }
 }

@@ -22,5 +22,10 @@ namespace StreamJsonRpc.Sample.Web.Controllers
                 this.Tick?.Invoke(this, ++tickNumber);
             }
         }
+
+        public string TestMethod(string clientId, string clientSecret)
+        {
+            return string.Concat(clientId, clientSecret);
+        }
     }
 }
